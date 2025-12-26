@@ -37,9 +37,9 @@ The goal of this module is to strengthen understanding of **dynamic data structu
 Linked_List/
 │
 ├── Singly_Linear/
-│   ├── C/
-│   ├── CPP/
-│   └── Java/
+│   ├── C
+│   ├── CPP
+│   └── Java
 │
 ├── Singly_Circular/
 ├── Doubly_Linear/
