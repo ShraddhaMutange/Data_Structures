@@ -50,15 +50,8 @@ void InsertFirst(
     newn->data = no;
     newn->next = NULL;
 
-    if(*first == NULL)  // LL is empty
-    {
-        *first = newn;
-    }
-    else
-    {
-        newn->next = *first;
-        *first = newn;
-    }
+    newn->next = *first;
+    *first = newn;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
