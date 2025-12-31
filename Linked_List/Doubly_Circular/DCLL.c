@@ -10,7 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Structure name  :   node
-//  Description     :   Represents a node of Singly linear Linked List
+//  Description     :   Represents a node of Doubly Circular Linked List
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
 // 
@@ -21,6 +21,7 @@ struct node
 {
     int data;
     struct node *next;
+    struct node *prev;
 };
 
 typedef struct node NODE;
@@ -30,8 +31,8 @@ typedef struct node ** PPNODE;
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   InsertFirst
-//  Description     :   Inserts a new node at the beginning of the linked list
-//  Input           :   PPNODE, Int
+//  Description     :   Inserts a new node at the beginning of the doubly circular linked list
+//  Input           :   PPNODE, PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -40,6 +41,7 @@ typedef struct node ** PPNODE;
 
 void InsertFirst(
                     PPNODE first,                   // Stores the address of head pointer
+                    PPNODE last,                    // Stores the address of tail pointer
                     int no                          // Stores value to insert
                 )
 {
@@ -49,16 +51,29 @@ void InsertFirst(
 
     newn->data = no;
     newn->next = NULL;
+    newn->prev = NULL;
 
-    newn->next = *first;
-    *first = newn;
+    if((*first == NULL) && (*last == NULL))
+    {
+        *first = newn;
+        *last = newn;
+    }
+    else
+    {
+        newn->next = *first;
+        newn->next->prev = newn;
+        *first = newn;
+    }
+    
+    (*last)->next = *first;
+    (*first)->prev = *last;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   InsertLast
-//  Description     :   Inserts a new node at the end of the linked list
-//  Input           :   PPNODE, Int
+//  Description     :   Inserts a new node at the end of the doubly circular linked list
+//  Input           :   PPNODE, PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -67,39 +82,39 @@ void InsertFirst(
 
 void InsertLast(
                     PPNODE first,                   // Stores the address of head pointer
+                    PPNODE last,                    // Stores the address of tail pointer
                     int no                          // Stores value to insert
                 )
 {
     PNODE newn = NULL;
-    PNODE temp = NULL;
 
     newn = (PNODE)malloc(sizeof(NODE));
 
     newn->data = no;
     newn->next = NULL;
+    newn->prev = NULL;
 
     if(*first == NULL)  // LL is empty
     {
         *first = newn;
+        *last = newn;
     }
     else
     {
-        temp = *first;
-
-        while(temp->next != NULL)
-        {
-            temp = temp->next;
-        }
-
-        temp->next = newn;
+        (*last)->next = newn;
+        newn->prev = *last;
+        *last = newn;
     }
+
+    (*last)->next = *first;
+    (*first)->prev = *last;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   DeleteFirst
-//  Description     :   Deletes the first node from the linked list
-//  Input           :   PPNODE
+//  Description     :   Deletes the first node from the doubly circular linked list
+//  Input           :   PPNODE, PPNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -107,33 +122,35 @@ void InsertLast(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void DeleteFirst(
-                    PPNODE first                    // Stores the address of head pointer
+                    PPNODE first,                   // Stores the address of head pointer
+                    PPNODE last                     // Stores the address of tail pointer
                 )
 {
-    PNODE temp = NULL;
-
-    if(*first == NULL)                              // Case 1 : LL is empty
+    if((*first == NULL) && (*last == NULL))         // Case 1 : LL is empty
     {
         return;
     }
-    else if((*first)->next == NULL)                 // Case 2 : LL contains only one node
+    else if(*first == *last)                        // Case 2 : LL contains only one node
     {
         free(*first);
         *first = NULL;
+        *last = NULL;
     }
     else                                            // Case 3 : LL contains mode than one element
     {
-        temp = *first;
         *first = (*first)->next;
-        free(temp);
+        free((*first)->prev);
+
+        (*last)->next = *first;
+        (*first)->prev = *last;
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   DeleteLast
-//  Description     :   Deletes the last node from the linked list
-//  Input           :   PPNODE
+//  Description     :   Deletes the last node from the doubly circular linked list
+//  Input           :   PPNODE, PPNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -141,7 +158,8 @@ void DeleteFirst(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void DeleteLast(
-                    PPNODE first                    // Stores the address of head pointer
+                    PPNODE first,                    // Stores the address of head pointer
+                    PPNODE last                     // Stores the address of tail pointer
                 )
 {
     PNODE temp = NULL;
@@ -157,23 +175,19 @@ void DeleteLast(
     }
     else                                            // Case 3 : LL contains mode than one element
     {
-        temp = *first;
+        *last = (*last)->prev;
+        free((*last)->next);
 
-        while(temp->next->next != NULL)
-        {
-            temp = temp->next;
-        }
-
-        free(temp->next);
-        temp->next = NULL;
+        (*last)->next = *first;
+        (*first)->prev = *last;
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   Display
-//  Description     :   Displays all elements of the linked list
-//  Input           :   PNODE
+//  Description     :   Displays all elements of the doubly circular linked list
+//  Input           :   PNODE, PNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -181,22 +195,25 @@ void DeleteLast(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void Display(
-                PNODE first                         // Head pointer of linked list
+                PNODE first,                         // Head pointer of linked list
+                PNODE last                          // Stores the address of tail pointer
             )
 {
-    while(first != NULL)
+    do
     {
-        printf("| %d | -> ", first->data);
+        printf("| %d | <=> ", first->data);
         first = first->next;
     }
-    printf("NULL\n");
+    while(first != last->next);
+    
+    printf("\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   Count
-//  Description     :   Counts number of nodes present in the linked list
-//  Input           :   PNODE
+//  Description     :   Counts number of nodes present in the doubly circular linked list
+//  Input           :   PNODE, PNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -204,16 +221,17 @@ void Display(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 int Count(
-                PNODE first                         // Head pointer of linked list
+                PNODE first,                         // Head pointer of linked list
+                PNODE last                          // Stores the address of tail pointer
             )
 {
     int iCount = 0;
 
-    while(first != NULL)
+    do
     {
         iCount++;
         first = first->next;
-    }
+    }while(first != last->next);
 
     return iCount;
 }
@@ -221,8 +239,8 @@ int Count(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   InsertAtPos
-//  Description     :   Inserts a new node at a specified position in the linked list
-//  Input           :   PPNODE, Int
+//  Description     :   Inserts a new node at a specified position in the doubly circular linked list
+//  Input           :   PPNODE, PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -231,6 +249,7 @@ int Count(
 
 void InsertAtPos(
                     PPNODE first,                   // Address of head pointer
+                    PPNODE last,                    // Stores the address of tail pointer
                     int no,                         // Value to insert
                     int pos                         // Position
                 )
@@ -244,8 +263,9 @@ void InsertAtPos(
 
     newn->data = no;
     newn->next = NULL;
+    newn->prev = NULL;
 
-    iSize = Count(*first);
+    iSize = Count(*first, *last);
 
     if((pos < 1) || (pos > (iSize+1)))
     {
@@ -255,11 +275,11 @@ void InsertAtPos(
 
     if(pos == 1)
     {
-        InsertFirst(first, no);
+        InsertFirst(first, last, no);
     }
     else if(pos == iSize+1)
     {
-        InsertLast(first, no);
+        InsertLast(first, last, no);
     }
     else
     {
@@ -273,7 +293,9 @@ void InsertAtPos(
         }
 
         newn->next = temp->next;
+        temp->next->prev = newn;    // newn->next->prev = newn;
         temp->next = newn;
+        newn->prev = temp;
 
     }
 }
@@ -281,8 +303,8 @@ void InsertAtPos(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   DeleteAtPos
-//  Description     :   Deletes a new node from a specified position in the linked list
-//  Input           :   PPNODE, Int
+//  Description     :   Deletes a new node from a specified position in the doubly circular linked list
+//  Input           :   PPNODE, PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
@@ -291,12 +313,13 @@ void InsertAtPos(
 
 void DeleteAtPos(
                     PPNODE first,                   // Address of head pointer
+                    PPNODE last,                    // Stores the address of tail pointer
                     int pos                         // Position
                 )
 {
     int iSize = 0;
 
-    iSize = Count(*first);
+    iSize = Count(*first, *last);
 
     PNODE temp = NULL;
     PNODE target = NULL;
@@ -309,11 +332,11 @@ void DeleteAtPos(
 
     if(pos == 1)
     {
-        DeleteFirst(first);
+        DeleteFirst(first, last);
     }
     else if(pos == iSize)
     {
-        DeleteLast(first);
+        DeleteLast(first, last);
     }
     else
     {
@@ -328,6 +351,7 @@ void DeleteAtPos(
 
         target = temp->next;
         temp->next = target->next;      // temp->next = temp->next->next;
+        temp->next->prev = temp;
         free(target);
     }
 
@@ -342,53 +366,54 @@ void DeleteAtPos(
 int main()
 {
     PNODE head = NULL;
+    PNODE tail = NULL;
+
     int iRet = 0;
 
-    InsertFirst(&head, 51);
-    InsertFirst(&head, 21);
-    InsertFirst(&head, 11);
+    InsertFirst(&head, &tail, 121);
+    InsertFirst(&head, &tail, 111);
+    InsertFirst(&head, &tail, 101);
 
-    Display(head);
-
-    iRet = Count(head);
+    Display(head, tail);
+    
+    iRet = Count(head, tail);
     printf("Number of nodes : %d\n", iRet);
 
+    InsertLast(&head, &tail, 151);
+    InsertLast(&head, &tail, 161);
+    InsertLast(&head, &tail, 171);
 
-    InsertLast(&head, 121);
-    InsertLast(&head, 111);
-    InsertLast(&head, 101);
-
-    Display(head);
-
-    iRet = Count(head);
+    Display(head, tail);
+    
+    iRet = Count(head, tail);
     printf("Number of nodes : %d\n", iRet);
 
-    DeleteFirst(&head);
+    DeleteFirst(&head, &tail);
 
-    Display(head);
+    Display(head, tail);
+    
+    iRet = Count(head, tail);
+    printf("Number of nodes : %d\n", iRet);
 
-    iRet = Count(head);
-    printf("Number of nodes : %d\n", iRet); 
+    DeleteLast(&head, &tail);
 
-    DeleteLast(&head);
+    Display(head, tail);
+    
+    iRet = Count(head, tail);
+    printf("Number of nodes : %d\n", iRet);
 
-    Display(head);
+    InsertAtPos(&head, &tail, 555, 4);
 
-    iRet = Count(head);
-    printf("Number of nodes : %d\n", iRet); 
+    Display(head, tail);
+    
+    iRet = Count(head, tail);
+    printf("Number of nodes : %d\n", iRet);
 
-    InsertAtPos(&head, 105, 3);
+    DeleteAtPos(&head, &tail, 4);
 
-    Display(head);
-
-    iRet = Count(head);
-    printf("Number of nodes : %d\n", iRet); 
-
-    DeleteAtPos(&head, 3);
-
-    Display(head);
-
-    iRet = Count(head);
+    Display(head, tail);
+    
+    iRet = Count(head, tail);
     printf("Number of nodes : %d\n", iRet);
 
     return 0;

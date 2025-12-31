@@ -10,7 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Structure name  :   node
-//  Description     :   Represents a node of Singly linear Linked List
+//  Description     :   Represents a node of Doubly linear Linked List
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   19/12/2025
 // 
@@ -21,6 +21,7 @@ struct node
 {
     int data;
     struct node *next;
+    struct node *prev;
 };
 
 typedef struct node NODE;
@@ -30,7 +31,7 @@ typedef struct node ** PPNODE;
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   InsertFirst
-//  Description     :   Inserts a new node at the beginning of the linked list
+//  Description     :   Inserts a new node at the beginning of the doubly linear linked list
 //  Input           :   PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -49,15 +50,24 @@ void InsertFirst(
 
     newn->data = no;
     newn->next = NULL;
+    newn->prev = NULL;
 
-    newn->next = *first;
-    *first = newn;
+    if(*first == NULL)
+    {
+        *first = newn;
+    }
+    else
+    {
+        newn->next = *first;
+        newn->next->prev = newn;
+        *first = newn;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   InsertLast
-//  Description     :   Inserts a new node at the end of the linked list
+//  Description     :   Inserts a new node at the end of the doubly linear linked list
 //  Input           :   PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -77,6 +87,7 @@ void InsertLast(
 
     newn->data = no;
     newn->next = NULL;
+    newn->prev = NULL;
 
     if(*first == NULL)  // LL is empty
     {
@@ -92,13 +103,14 @@ void InsertLast(
         }
 
         temp->next = newn;
+        newn->prev = temp;
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   DeleteFirst
-//  Description     :   Deletes the first node from the linked list
+//  Description     :   Deletes the first node from the doubly linear linked list
 //  Input           :   PPNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -125,6 +137,7 @@ void DeleteFirst(
     {
         temp = *first;
         *first = (*first)->next;
+        (*first)->prev = NULL;
         free(temp);
     }
 }
@@ -186,7 +199,7 @@ void Display(
 {
     while(first != NULL)
     {
-        printf("| %d | -> ", first->data);
+        printf("| %d | <=> ", first->data);
         first = first->next;
     }
     printf("NULL\n");
@@ -221,7 +234,7 @@ int Count(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   InsertAtPos
-//  Description     :   Inserts a new node at a specified position in the linked list
+//  Description     :   Inserts a new node at a specified position in the doubly linear linked list
 //  Input           :   PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -244,6 +257,7 @@ void InsertAtPos(
 
     newn->data = no;
     newn->next = NULL;
+    newn->prev = NULL;
 
     iSize = Count(*first);
 
@@ -273,7 +287,9 @@ void InsertAtPos(
         }
 
         newn->next = temp->next;
+        temp->next->prev = newn;    // newn->next->prev = newn;
         temp->next = newn;
+        newn->prev = temp;
 
     }
 }
@@ -328,6 +344,7 @@ void DeleteAtPos(
 
         target = temp->next;
         temp->next = target->next;      // temp->next = temp->next->next;
+        temp->next->prev = temp;
         free(target);
     }
 
