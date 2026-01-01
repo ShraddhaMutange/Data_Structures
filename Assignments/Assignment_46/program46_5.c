@@ -106,8 +106,6 @@ int main()
 {
     PNODE head = NULL;
 
-    bool bRet = false;
-
     InsertFirst(&head, -111);
     InsertFirst(&head, 101);
     InsertFirst(&head, 51);
