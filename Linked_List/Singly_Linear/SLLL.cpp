@@ -77,7 +77,7 @@ class SinglyLL
             }
             else if(this->first->next == NULL)
             {
-                free(this->first);
+                delete this->first;
                 this->first = NULL;
             }
             else
@@ -85,7 +85,7 @@ class SinglyLL
                 temp = this->first;
 
                 this->first = this->first->next;
-                free(temp);
+                delete temp;
             }
 
             iCount--;
@@ -101,7 +101,7 @@ class SinglyLL
             }
             else if(this->first->next == NULL)
             {
-                free(this->first);
+                delete this->first;
                 this->first = NULL;
             }
             else
@@ -113,7 +113,7 @@ class SinglyLL
                     temp = temp->next;
                 }
 
-                free(temp->next);
+                delete temp->next;
                 temp->next = NULL;
             }
 
@@ -216,7 +216,7 @@ class SinglyLL
                 target = temp->next;
 
                 temp->next = target->next;
-                free(target);
+                delete target;
 
                 this->iCount--;
             }
