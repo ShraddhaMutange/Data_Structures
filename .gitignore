@@ -1,0 +1,8 @@
+# Ignore compiled files
+*.exe
+*.out
+a.out
+
+# Ignore temporary binaries
+Myexe
+
