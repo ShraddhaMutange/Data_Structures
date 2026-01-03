@@ -29,8 +29,8 @@ typedef struct node ** PPNODE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
-//  Function Name   :   InsertFirst
-//  Description     :   Inserts a new node at the beginning of the linked list
+//  Function Name   :   InsertLast
+//  Description     :   Inserts a new node at the end of the linked list
 //  Input           :   PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -38,50 +38,62 @@ typedef struct node ** PPNODE;
 // 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void InsertFirst(PPNODE first, int no)
+void InsertLast(PPNODE first, int no)
 {
     PNODE newn = NULL;
+    PNODE temp = NULL;
 
     newn = (PNODE)malloc(sizeof(NODE));
 
     newn->data = no;
     newn->next = NULL;
 
-    newn->next = *first;
-    *first = newn;
+    if(*first == NULL)
+    {
+        *first = newn;
+    }
+    else
+    {
+        temp = *first;
+
+        while(temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+
+        temp->next = newn;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
-//  Function Name   :   IsEmpty
-//  Description     :   Checks if linked list is empty
+//  Function Name   :   Count
+//  Description     :   Count number of elements in the linked list
 //  Input           :   PNODE
-//  Output          :   Bool
+//  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   1/1/2026
 // 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void ReplaceNegative(PPNODE first)
+int Count(PNODE first)
 {
-    PNODE temp = NULL;
+    int iCount = 0;
 
-    temp = *first;
-    while(temp != NULL)
+    while(first != NULL)
     {
-        if(temp->data < 0)
-        {
-            temp->data = 0;
-        }
-        temp = temp->next;
+        iCount++;
+        first = first->next;
     }
+
+    return iCount;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   Display
 //  Description     :   Displays elements present in linked list
-//  Input           :   PPNODE
+//  Input           :   PNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   1/1/2026
@@ -94,6 +106,40 @@ void Display(PNODE first)
     {
         printf("| %d | -> ", first->data);
         first = first->next;
+    }
+    printf("NULL\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 
+//  Function Name   :   Display
+//  Description     :   Displays elements present in linked list
+//  Input           :   PNODE
+//  Output          :   Void
+//  Author          :   Shraddha Dhananjay Mutange
+//  Date            :   1/1/2026
+// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void ReverseDisplay(PNODE first)
+{
+    int iSize = 0;
+    int i = 0;
+
+    iSize = Count(first);
+
+    int Arr[iSize];
+
+    while(first != NULL)
+    {
+        Arr[i] = first->data;
+        first = first->next;
+        i++;
+    }
+
+    for(i = iSize-1; i>=0; i--)
+    {
+        printf("| %d | -> ", Arr[i]);
     }
 
     printf("NULL\n");
@@ -109,19 +155,17 @@ int main()
 {
     PNODE head = NULL;
 
-    InsertFirst(&head, -111);
-    InsertFirst(&head, 101);
-    InsertFirst(&head, 51);
-    InsertFirst(&head, -21);
-    InsertFirst(&head, 11);
+    InsertLast(&head, 11);
+    InsertLast(&head, 21);
+    InsertLast(&head, 51);
+    InsertLast(&head, 101);
+    InsertLast(&head, 111);
 
-    printf("Before replacing : \n");
+    printf("Linked list : \n");
     Display(head);
 
-    ReplaceNegative(&head);
-
-    printf("After replacing : \n");
-    Display(head);
+    printf("Reversed linked list : \n");
+    ReverseDisplay(head);
 
     return 0;
 }
@@ -130,9 +174,9 @@ int main()
 // 
 //  Testcases handled succesfully by the application
 // 
-//  Output  :   Before replacing : 
-//              | 11 | -> | -21 | -> | 51 | -> | 101 | -> | -111 | -> NULL
-//              After replacing : 
-//              | 11 | -> | 0 | -> | 51 | -> | 101 | -> | 0 | -> NULL
+//  Output  :   Linked list : 
+//              | 11 | -> | 21 | -> | 51 | -> | 101 | -> | 111 | -> NULL
+//              Reversed linked list : 
+//              | 111 | -> | 101 | -> | 51 | -> | 21 | -> | 11 | -> NULL 
 // 
 ////////////////////////////////////////////////////////////////////////////////////

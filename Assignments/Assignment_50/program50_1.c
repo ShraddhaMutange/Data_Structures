@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
@@ -29,8 +30,8 @@ typedef struct node ** PPNODE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
-//  Function Name   :   InsertFirst
-//  Description     :   Inserts a new node at the beginning of the linked list
+//  Function Name   :   InsertLast
+//  Description     :   Inserts a new node at the end of the linked list
 //  Input           :   PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -38,50 +39,38 @@ typedef struct node ** PPNODE;
 // 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void InsertFirst(PPNODE first, int no)
+void InsertLast(PPNODE first, int no)
 {
     PNODE newn = NULL;
+    PNODE temp = NULL;
 
     newn = (PNODE)malloc(sizeof(NODE));
 
     newn->data = no;
     newn->next = NULL;
 
-    newn->next = *first;
-    *first = newn;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// 
-//  Function Name   :   IsEmpty
-//  Description     :   Checks if linked list is empty
-//  Input           :   PNODE
-//  Output          :   Bool
-//  Author          :   Shraddha Dhananjay Mutange
-//  Date            :   1/1/2026
-// 
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-void ReplaceNegative(PPNODE first)
-{
-    PNODE temp = NULL;
-
-    temp = *first;
-    while(temp != NULL)
+    if(*first == NULL)
     {
-        if(temp->data < 0)
-        {
-            temp->data = 0;
-        }
-        temp = temp->next;
+        *first = newn;
     }
-}
+    else
+    {
+        temp = *first;
+
+        while(temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+
+        temp->next = newn;
+    }
+} 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   Display
 //  Description     :   Displays elements present in linked list
-//  Input           :   PPNODE
+//  Input           :   PNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   1/1/2026
@@ -95,8 +84,35 @@ void Display(PNODE first)
         printf("| %d | -> ", first->data);
         first = first->next;
     }
-
     printf("NULL\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 
+//  Function Name   :   CountTwoDigitNos
+//  Description     :   Counts elements with 2 digits
+//  Input           :   PNODE
+//  Output          :   Int
+//  Author          :   Shraddha Dhananjay Mutange
+//  Date            :   1/1/2026
+// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void MakeAbsolute(PPNODE head)
+{
+    PNODE temp = NULL;
+
+    temp = *head;
+
+    while(temp != NULL)
+    {
+        if(temp->data < 0)
+        {
+            temp->data = -temp->data;
+        }
+
+        temp = temp->next;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,30 +125,29 @@ int main()
 {
     PNODE head = NULL;
 
-    InsertFirst(&head, -111);
-    InsertFirst(&head, 101);
-    InsertFirst(&head, 51);
-    InsertFirst(&head, -21);
-    InsertFirst(&head, 11);
+    InsertLast(&head, 10);
+    InsertLast(&head, -111);
+    InsertLast(&head, -12);
+    InsertLast(&head, 113);
+    InsertLast(&head, -14);
 
-    printf("Before replacing : \n");
+    printf("Linked list : \n");
     Display(head);
 
-    ReplaceNegative(&head);
-
-    printf("After replacing : \n");
+    printf("Linked list after making elements absolute : \n");
+    MakeAbsolute(&head);
     Display(head);
 
     return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Testcases handled succesfully by the application
 // 
-//  Output  :   Before replacing : 
-//              | 11 | -> | -21 | -> | 51 | -> | 101 | -> | -111 | -> NULL
-//              After replacing : 
-//              | 11 | -> | 0 | -> | 51 | -> | 101 | -> | 0 | -> NULL
+//  Input   :   Linked list : 
+//              | 10 | -> | -111 | -> | -12 | -> | 113 | -> | -14 | -> NULL
+//  Output  :   Linked list after making elements absolute : 
+//              | 10 | -> | 111 | -> | 12 | -> | 113 | -> | 14 | -> NULL
 // 
-////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////

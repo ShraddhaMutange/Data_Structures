@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
@@ -29,8 +30,8 @@ typedef struct node ** PPNODE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
-//  Function Name   :   InsertFirst
-//  Description     :   Inserts a new node at the beginning of the linked list
+//  Function Name   :   InsertLast
+//  Description     :   Inserts a new node at the end of the linked list
 //  Input           :   PPNODE, Int
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
@@ -38,50 +39,38 @@ typedef struct node ** PPNODE;
 // 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void InsertFirst(PPNODE first, int no)
+void InsertLast(PPNODE first, int no)
 {
     PNODE newn = NULL;
+    PNODE temp = NULL;
 
     newn = (PNODE)malloc(sizeof(NODE));
 
     newn->data = no;
     newn->next = NULL;
 
-    newn->next = *first;
-    *first = newn;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// 
-//  Function Name   :   IsEmpty
-//  Description     :   Checks if linked list is empty
-//  Input           :   PNODE
-//  Output          :   Bool
-//  Author          :   Shraddha Dhananjay Mutange
-//  Date            :   1/1/2026
-// 
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-void ReplaceNegative(PPNODE first)
-{
-    PNODE temp = NULL;
-
-    temp = *first;
-    while(temp != NULL)
+    if(*first == NULL)
     {
-        if(temp->data < 0)
-        {
-            temp->data = 0;
-        }
-        temp = temp->next;
+        *first = newn;
     }
-}
+    else
+    {
+        temp = *first;
+
+        while(temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+
+        temp->next = newn;
+    }
+} 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 
 //  Function Name   :   Display
 //  Description     :   Displays elements present in linked list
-//  Input           :   PPNODE
+//  Input           :   PNODE
 //  Output          :   Void
 //  Author          :   Shraddha Dhananjay Mutange
 //  Date            :   1/1/2026
@@ -95,8 +84,60 @@ void Display(PNODE first)
         printf("| %d | -> ", first->data);
         first = first->next;
     }
-
     printf("NULL\n");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 
+//  Function Name   :   IsPrime
+//  Description     :   Checks if number is prime or not
+//  Input           :   Int
+//  Output          :   Bool
+//  Author          :   Shraddha Dhananjay Mutange
+//  Date            :   1/1/2026
+// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+bool IsPrime(int iNo)
+{
+    bool bFlag = false;
+    int iCnt = 0;
+
+    for(iCnt = 2, bFlag = true; iCnt <= (iNo/2); iCnt++)
+    {
+        if((iNo % iCnt) == 0)
+        {
+            bFlag = false;
+            break;
+        }
+    }
+
+    return bFlag;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 
+//  Function Name   :   DisplayPrime
+//  Description     :   Displays prime elements present in linked list
+//  Input           :   PNODE
+//  Output          :   Void
+//  Author          :   Shraddha Dhananjay Mutange
+//  Date            :   1/1/2026
+// 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void DisplayPrime(PNODE head)
+{
+    while(head != NULL)
+    {
+        if(IsPrime(head->data) == true)
+        {
+            printf("%d\t", head->data);
+        }
+        head = head->next;
+    }
+
+    printf("\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,19 +150,22 @@ int main()
 {
     PNODE head = NULL;
 
-    InsertFirst(&head, -111);
-    InsertFirst(&head, 101);
-    InsertFirst(&head, 51);
-    InsertFirst(&head, -21);
-    InsertFirst(&head, 11);
+    InsertLast(&head, 11);
+    InsertLast(&head, 21);
+    InsertLast(&head, 7);
+    InsertLast(&head, 9);
+    InsertLast(&head, 19);
+    InsertLast(&head, 29);
+    InsertLast(&head, 3);
+    InsertLast(&head, 30);
 
-    printf("Before replacing : \n");
+    printf("Linked list : \n");
     Display(head);
 
-    ReplaceNegative(&head);
+    printf("Prime numbers present in linked list : \n");
+    DisplayPrime(head);
 
-    printf("After replacing : \n");
-    Display(head);
+    // Display(head);
 
     return 0;
 }
@@ -130,9 +174,9 @@ int main()
 // 
 //  Testcases handled succesfully by the application
 // 
-//  Output  :   Before replacing : 
-//              | 11 | -> | -21 | -> | 51 | -> | 101 | -> | -111 | -> NULL
-//              After replacing : 
-//              | 11 | -> | 0 | -> | 51 | -> | 101 | -> | 0 | -> NULL
+//  Output  :   Linked list : 
+//              | 11 | -> | 21 | -> | 7 | -> | 9 | -> | 19 | -> | 29 | -> | 3 | -> | 30 | -> NULL
+//              Prime numbers present in linked list : 
+//              11	7	19	29	3
 // 
 ////////////////////////////////////////////////////////////////////////////////////
